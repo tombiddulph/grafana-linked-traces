@@ -1,0 +1,16 @@
+apiVersion: 1
+datasources:
+  - name: Tempo
+    uid: local-tempo
+    type: tempo
+    access: proxy
+    url: http://tempo:3200
+    correlations:
+      - label: Open linked traces
+        description: Show this trace and its incoming and outgoing OpenTelemetry span links.
+        type: external
+        config:
+          field: traceID
+          target:
+            # Escape the dollar sign so provisioning leaves the trace variable intact.
+            url: '/a/tombiddulph-linkedtraces-app/?ds=local-tempo&traceId=$$traceID'

@@ -1,0 +1,18 @@
+services:
+  grafana:
+    image: grafana/${GRAFANA_IMAGE:-grafana}:${GRAFANA_VERSION:-13.2.4}
+    ports:
+      - '127.0.0.1:3000:3000'
+    environment:
+      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: tombiddulph-linkedtraces-app
+    volumes:
+      - ./dist:/var/lib/grafana/plugins/tombiddulph-linkedtraces-app:ro
+      - ./provisioning:/etc/grafana/provisioning:ro
+    depends_on: [tempo]
+  tempo:
+    image: grafana/tempo:2.9.0
+    command: ['-config.file=/etc/tempo.yaml']
+    ports:
+      - '127.0.0.1:4318:4318'
+    volumes:
+      - ./dev/tempo.yaml:/etc/tempo.yaml:ro
